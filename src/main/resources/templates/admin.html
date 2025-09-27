@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Online-shop</title>
+</head>
+<body>
+<h1>Online-shop</h1>
+<hr>
+<h4>Панель администратора</h4>
+<div th:if="${users != null and !users.empty}">
+    <table border="1">
+        <tr>
+            <th>Email</th>
+            <th>Номер телефона</th>
+            <th>Активность</th>
+            <th>Роли</th>
+            <th>Бан</th>
+            <th>Редактирование</th>
+            <th>Подробная информация</th>
+        </tr>
+        <tr th:each="user : ${users}">
+            <th th:text="${user.email}"></th>
+            <th th:text="${user.phoneNumber}"></th>
+            <th>
+                <span th:if="${user.active}">true</span>
+                <span th:unless="${user.active}">false</span>
+            </th>
+            <th>
+                <span th:each="role : ${user.roles}" th:text="${role} + ' '"></span>
+            </th>
+            <th>
+                <form th:action="@{/admin/user/ban/{id}(id=${user.id})}" method="post">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                    <input type="submit" value="Бан">
+                </form>
+            </th>
+            <th><a th:href="@{/admin/user/edit/{id}(id=${user.id})}">Редактирование</a></th>
+            <th><a th:href="@{/user/{id}(id=${user.id})}">Подробная информация</a></th>
+        </tr>
+    </table>
+</div>
+<div th:if="${users == null or users.empty}">
+    <h3>Пользователей нет</h3>
+</div>
+</body>
+</html>
